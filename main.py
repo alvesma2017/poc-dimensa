@@ -24,6 +24,11 @@ with st.form(key="form_envio", clear_on_submit=False):
         type=["docx", "pdf"],
         accept_multiple_files=True
     )
+
+    # Exibe mensagem de erro se o usuário anexar mais de 5 arquivos
+    if uploaded_files and len(uploaded_files) > 5:
+        st.error("Você pode anexar no máximo 5 arquivos por vez. Remova os arquivos extras para continuar.")
+
     prompt_extra = st.text_area("Observações adicionais ou texto livre para análise (opcional):", height=100, key="prompt")
     col1, col2 = st.columns([1, 1])
     enviar = col1.form_submit_button("Analisar conteúdo (arquivos e/ou texto livre)")
@@ -36,10 +41,8 @@ if limpar:
     st.experimental_rerun()
 
 if enviar:
-    # Limite de no máximo 5 arquivos
     if uploaded_files and len(uploaded_files) > 5:
-        st.error("Você pode anexar no máximo 5 arquivos por vez.")
-    # Checa se ao menos um arquivo ou prompt foi enviado
+        st.error("Você pode anexar no máximo 5 arquivos por vez. Remova os arquivos extras para continuar.")
     elif (not uploaded_files or len(uploaded_files) == 0) and not prompt_extra.strip():
         st.error("Por favor, escreva algo nas observações ou anexe ao menos um arquivo para análise.")
     else:
