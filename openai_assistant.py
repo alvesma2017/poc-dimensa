@@ -27,7 +27,7 @@ Eu sou um agente especializado em analise detalhada de documentações de especi
     response = openai.chat.completions.create(
         model="gpt-4.1",
         messages=[
-            {"role": "system", "content": "Você é um assistente jurídico especializado na Lei 14.133/2021."},
+            {"role": "system", "content": "Eu sou um agente especializado em analise detalhada de documentações de especificação funcional e deve se basear nos documentos que estão neste assistente: asst_mtt64J3Pm5GzvCOiGlttosbj."},
             {"role": "user", "content": full_prompt},
         ],
         temperature=0.1,
