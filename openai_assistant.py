@@ -15,7 +15,14 @@ def enviar_para_openai(documento_texto, prompt_extra="", usar_prompt_padrao=True
 
     if usar_prompt_padrao:
         prompt_base = """
-Eu sou um agente especializado em analise detalhada de documentações de especificação funcional.
+Você é um analista funcional especializado em análise de documentos de especificações funcionais de sistemas.  
+Leia atentamente os documentos armazenados na base vetorial de conhecimento com ID `vs_686f9f91cad88191b922fcf89beff78d`.  
+Com base nesses documentos, responda de forma detalhada, objetiva e fundamentada, trazendo sempre a referência exata do conteúdo encontrado na base para justificar cada resposta.
+
+Utilize sempre trechos e informações específicas dos documentos da base para embasar suas respostas.  
+Caso não encontre a informação solicitada, responda de forma clara que a base de conhecimento não contém esse dado, evitando respostas genéricas ou inventadas.
+
+Sempre cite a fonte ou o documento da base ao justificar sua resposta.
 """
         full_prompt = prompt_base + "\n\nDocumento enviado:\n" + documento_texto
         if prompt_extra:
