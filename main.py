@@ -6,17 +6,6 @@ st.set_page_config(layout="wide", page_title="Agente Jurídico Prefeitura Goiani
 
 with st.sidebar:
     st.image("logo_eug.png", width=220)
-    st.markdown(
-        """
-        <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 10px;'>
-            <a href='/' style='color:#fff;text-decoration:none;'><b>Análise Jurídica</b></a>
-        </div>
-        <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 20px;'>
-            <a href='https://poc-goiania-gpt-v1.streamlit.app/' style='color:#fff;text-decoration:none;'><b>Gerar Documentação</b></a>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 st.title("Análise Jurídica - Licitações")
 
@@ -30,10 +19,14 @@ if "titulo_modelo" not in st.session_state:
 
 # ---- FORMULÁRIO NORMAL ----
 with st.form(key="form_envio", clear_on_submit=False):
-    uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
+    uploaded_files = st.file_uploader(
+        "Anexe um ou mais arquivos Word (.docx) ou PDF (.pdf):",
+        type=["docx", "pdf"],
+        accept_multiple_files=True
+    )
     prompt_extra = st.text_area("Observações adicionais ou texto livre para análise (opcional):", height=100, key="prompt")
     col1, col2 = st.columns([1, 1])
-    enviar = col1.form_submit_button("Analisar conteúdo (arquivo e/ou texto livre)")
+    enviar = col1.form_submit_button("Analisar conteúdo (arquivos e/ou texto livre)")
     limpar = col2.form_submit_button("Limpar histórico")
 
 if limpar:
@@ -43,28 +36,32 @@ if limpar:
     st.experimental_rerun()
 
 if enviar:
-    if uploaded_file is None and not prompt_extra.strip():
-        st.error("Por favor, escreva algo nas observações ou anexe um arquivo para análise.")
+    # Checa se ao menos um arquivo ou prompt foi enviado
+    if (not uploaded_files or len(uploaded_files) == 0) and not prompt_extra.strip():
+        st.error("Por favor, escreva algo nas observações ou anexe ao menos um arquivo para análise.")
     else:
         with st.spinner("Analisando o conteúdo..."):
-            if uploaded_file:
-                if uploaded_file.type == "application/pdf":
-                    texto = extrair_texto_pdf(uploaded_file)
-                else:
-                    texto = extrair_texto_docx(uploaded_file)
-                # Junta o texto extraído com o texto livre, se houver
+            textos = []
+            nomes_arquivos = []
+
+            if uploaded_files:
+                for uploaded_file in uploaded_files:
+                    if uploaded_file.type == "application/pdf":
+                        texto = extrair_texto_pdf(uploaded_file)
+                    else:
+                        texto = extrair_texto_docx(uploaded_file)
+                    textos.append(texto)
+                    nomes_arquivos.append(uploaded_file.name)
+                texto_total = "\n\n---\n\n".join(textos)
                 if prompt_extra.strip():
-                    texto_total = texto + "\n\n" + prompt_extra
-                else:
-                    texto_total = texto
-                nome_arquivo = uploaded_file.name
+                    texto_total += "\n\n" + prompt_extra
             else:
                 texto_total = prompt_extra
-                nome_arquivo = "Sem arquivo anexado"
+                nomes_arquivos = ["Sem arquivo anexado"]
 
             resposta = enviar_para_openai(texto_total, prompt_extra)
             st.session_state["historico"].append({
-                "documento": nome_arquivo,
+                "documento": ", ".join(nomes_arquivos),
                 "prompt": prompt_extra,
                 "resposta": resposta,
             })
@@ -73,7 +70,7 @@ if enviar:
 
 # ---- EXIBIR HISTÓRICO ----
 for idx, item in enumerate(reversed(st.session_state["historico"])):
-    st.markdown(f"**Arquivo analisado:** {item['documento']}")
+    st.markdown(f"**Arquivo(s) analisado(s):** {item['documento']}")
     if item['prompt']:
         st.markdown(f"**Prompt enviado:** {item['prompt']}")
     st.markdown("---")
