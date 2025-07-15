@@ -16,7 +16,7 @@ def enviar_para_openai(documento_texto, prompt_extra="", usar_prompt_padrao=True
     if usar_prompt_padrao:
         prompt_base = """
 Você é um analista funcional especializado em análise de documentos de especificações funcionais de sistemas.  
-Leia atentamente os documentos armazenados na base vetorial de conhecimento com ID `vs_686f9f91cad88191b922fcf89beff78d`.  
+Leia atentamente os documentos armazenados na base vetorial de conhecimento com ID 'vs_686f9f91cad88191b922fcf89beff78d'.  
 Com base nesses documentos, responda de forma detalhada, objetiva e fundamentada, trazendo sempre a referência exata do conteúdo encontrado na base para justificar cada resposta.
 
 Utilize sempre trechos e informações específicas dos documentos da base para embasar suas respostas.  
