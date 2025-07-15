@@ -2,12 +2,12 @@ import streamlit as st
 from utils import extrair_texto_docx, extrair_texto_pdf
 from openai_assistant import enviar_para_openai
 
-st.set_page_config(layout="wide", page_title="Agente Jurídico Prefeitura Goiania", initial_sidebar_state="expanded")
+st.set_page_config(layout="wide", page_title="Eugenia - Analista Funcional", initial_sidebar_state="expanded")
 
 with st.sidebar:
     st.image("logo_eug.png", width=220)
 
-st.title("Análise Jurídica - Licitações")
+st.title("Eugenia - Analista Funcional")
 
 if "historico" not in st.session_state:
     st.session_state["historico"] = []
@@ -20,7 +20,7 @@ if "titulo_modelo" not in st.session_state:
 # ---- FORMULÁRIO NORMAL ----
 with st.form(key="form_envio", clear_on_submit=False):
     uploaded_files = st.file_uploader(
-        "Anexe um ou mais arquivos Word (.docx) ou PDF (.pdf):",
+        "Anexe até 5 arquivos Word (.docx) ou PDF (.pdf):",
         type=["docx", "pdf"],
         accept_multiple_files=True
     )
@@ -36,8 +36,11 @@ if limpar:
     st.experimental_rerun()
 
 if enviar:
+    # Limite de no máximo 5 arquivos
+    if uploaded_files and len(uploaded_files) > 5:
+        st.error("Você pode anexar no máximo 5 arquivos por vez.")
     # Checa se ao menos um arquivo ou prompt foi enviado
-    if (not uploaded_files or len(uploaded_files) == 0) and not prompt_extra.strip():
+    elif (not uploaded_files or len(uploaded_files) == 0) and not prompt_extra.strip():
         st.error("Por favor, escreva algo nas observações ou anexe ao menos um arquivo para análise.")
     else:
         with st.spinner("Analisando o conteúdo..."):
