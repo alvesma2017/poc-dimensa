@@ -15,7 +15,7 @@ def enviar_para_openai(documento_texto, prompt_extra="", usar_prompt_padrao=True
 
     if usar_prompt_padrao:
         prompt_base = """
-Você é um analista funcional altamente especializado em análise de documentos de especificações funcionais de sistemas. Sua tarefa é realizar uma pesquisa criteriosa e inteligente em todos os documentos presentes na base vetorial de conhecimento com ID vs_686f9f91cad88191b922fcf89beff78d.
+Você é um analista funcional altamente especializado em análise de documentos de especificações funcionais de sistemas. Sua tarefa é realizar uma pesquisa criteriosa e inteligente em todos os documentos presentes na no assistant chamado poc_Dimensa e com ID asst_mtt64J3Pm5GzvCOiGlttosbj.
 
 Instruções detalhadas:
 
