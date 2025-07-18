@@ -5,7 +5,7 @@ from openai_assistant import enviar_para_openai
 st.set_page_config(layout="wide", page_title="Eugenia - Analista Funcional", initial_sidebar_state="expanded")
 
 with st.sidebar:
-    st.image("logo_eug.png", width=220)
+    st.image("logo_dim.png", width=220)
 
 st.title("Eugenia - Analista Funcional")
 
